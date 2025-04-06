@@ -1,0 +1,36 @@
+# Load required libraries
+library(tidyverse)
+library(tidytext)
+library(ggplot2)
+
+# Sample data
+reviews <- tibble(
+  review_id = 1:5,
+  text = c(
+    "The product was amazing! I loved it.",
+    "Terrible customer service. Will not buy again.",
+    "It’s okay, nothing special but not bad.",
+    "I am very happy with my purchase!",
+    "The item broke after one use. Very disappointed."
+  )
+)
+
+# Load Bing lexicon for sentiment classification
+bing_sentiments <- get_sentiments("bing")
+
+# Tokenize text
+tidy_reviews <- reviews %>%
+  unnest_tokens(word, text) %>%
+  inner_join(bing_sentiments, by = "word")
+
+# Count sentiment by review
+sentiment_counts <- tidy_reviews %>%
+  count(review_id, sentiment) %>%
+  pivot_wider(names_from = sentiment, values_from = n, values_fill = 0) %>%
+  mutate(overall_sentiment = positive - negative)
+
+# View results
+print(sentiment_counts)
+
+
+#Maybe if someone wants they can plot the sentiment scores?
