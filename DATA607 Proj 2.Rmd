@@ -241,3 +241,24 @@ After filtering out variables accounting for all sectors with or without land us
 ## **Conclusion**
 
 While all of these datasets had some stark differences, whether it be by the number of variables, or by the amount of sheer observations contained within, the process for tidying them was roughly the same across all three. Begin by identifying which columns can be addressed as the same variable, extend the data longer with said variable, and then transform the information into something to process. After that is when we see differences, as each dataset could be broken down differently. This leads to different forms of representation being better for one than another - I would not use columns as I did in emissions data to represent temperature and humidity in weather data. This was insightful on how managing and processing data can be very similar and very different!
+
+
+
+
+#Daniel Hanasab EDIT and submission
+
+# Select a few countries to compare over time
+top_countries <- c("United States of America", "China", "India", "Brazil", "Germany")
+
+# Filter and plot emissions over time
+tidy_emissions %>%
+  filter(Country %in% top_countries,
+         Element == "CO2") %>%
+  group_by(Country, Year) %>%
+  summarise(Total_Emissions = sum(Amt_kt, na.rm = TRUE), .groups = "drop") %>%
+  ggplot(aes(x = as.numeric(Year), y = Total_Emissions, color = Country)) +
+  geom_line(size = 1) +
+  labs(title = "CO2 Emissions Over Time (2000–2020)",
+       x = "Year", y = "Total CO2 Emissions (kt)") +
+  theme_minimal()
+
